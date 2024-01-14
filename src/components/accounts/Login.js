@@ -1,0 +1,98 @@
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import { useAuth } from "../../contexts/AuthContext";
+
+export default function Login() {
+  const navigate = useNavigate();
+
+  const [username, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { currentUser, login, setError } = useAuth();
+
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     navigate("/");
+  //   }
+  // }, [currentUser, navigate]);
+
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+
+    try {
+      setError("");
+      setLoading(true);
+     const isLoggedIn= await login(username, password);
+     if(isLoggedIn){
+      navigate("/chathome");
+     }
+      
+    } catch (e) {
+      setError("Failed to login");
+    }
+
+    setLoading(false);
+  }
+
+  return (
+    <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-4 text-3xl text-center tracking-tight font-light dark:text-white">
+            Login to your account
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+            <input
+                id="user-name"
+                name="userName"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 placeholder-gray-500 rounded-t-md bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Username"
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </div>
+            <br/>
+            <div>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 placeholder-gray-500 rounded-t-md bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className=" w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-sky-800 hover:bg-sky-900"
+            >
+              Login
+            </button>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="text-sm">
+            Don't have an account? {" "}
+              <Link
+                to="/"
+                className="text-blue-600 hover:underline dark:text-blue-500"
+              >
+                Register
+              </Link>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
