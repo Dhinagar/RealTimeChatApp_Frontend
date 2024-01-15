@@ -20,7 +20,6 @@ export default function UserLayout({ user, type, fetchData }) {
       setError("Not accepted. try again later.");
       return;
     }
-    fetchData;
   };
   const declineFreindRequsest = async (e) => {
     const acceptReq = await declineFreindReq(
