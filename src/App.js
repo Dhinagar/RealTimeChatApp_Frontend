@@ -8,6 +8,7 @@ import WithPrivateRoute from "./utils/WithPrivateRoute";
 import ChatLayout from "./components/layouts/ChatLayout";
 import Header from "./components/layouts/Header";
 import ErrorMessage from "./components/layouts/ErrorMessage";
+import ChatRoom from "./components/chat/ChatRoom";
 
 function App() {
   
@@ -32,6 +33,14 @@ function App() {
             element={
               <WithPrivateRoute>
                 <ChatLayout />
+              </WithPrivateRoute>
+            }
+          />
+          <Route
+            path="/chatroom"
+            element={
+              <WithPrivateRoute>
+                <ChatRoom />
               </WithPrivateRoute>
             }
           />

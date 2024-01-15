@@ -1,23 +1,50 @@
-import { useState, useEffect } from "react";
+import LetterThumbnaill from "../layouts/LetterThumbnaill";
 
-import { getUser } from "../../services/ChatService";
-import UserLayout from "../layouts/UserLayout";
+import { useAuth } from "../../contexts/AuthContext";
 
-export default function Contact({ chatRoom, onlineUsersId, currentUser }) {
-  const [contact, setContact] = useState();
+export default function Contact({ chatRoom =[], allusers=[] }) {
+  const { token, currentUser, setError } = useAuth();
+  const onlineUser =
+    chatRoom.user1 === currentUser.userName ? chatRoom.user2 : chatRoom.user1;
 
-  useEffect(() => {
-    const contactId = chatRoom.members?.find(
-      (member) => member !== currentUser.uid
-    );
+  function findUserStatus(usersArray, targetUserName) {
+    const user = usersArray.find((user) => user.userName === targetUserName);
 
-    const fetchData = async () => {
-      const res = await getUser(contactId);
-      setContact(res);
-    };
+    if (user) {
+      return user.status;
+    } else {
+      return "User not found";
+    }
+  }
 
-    fetchData();
-  }, [chatRoom, currentUser]);
+  const userStatus = findUserStatus(allusers, onlineUser);
+  const navigateToChatRoom = () => {};
 
-  return <UserLayout user={contact} onlineUsersId={onlineUsersId} />;
+  return (
+    <div
+      className="relative flex items-center w-full"
+      onClick={() => {
+        navigateToChatRoom();
+      }}
+    >
+      <LetterThumbnaill
+        text={
+          chatRoom.user1 === currentUser.userName
+            ? chatRoom.user2
+            : chatRoom.user1
+        }
+        backgroundColor="#3498db"
+      />
+      <span className="block ml-2 text-gray-500 dark:text-gray-400">
+        {chatRoom.user1 === currentUser.userName
+          ? chatRoom.user2
+          : chatRoom.user1}
+      </span>
+      {userStatus !== "offline" ? (
+        <span className="bottom-0 left-7 absolute  w-3.5 h-3.5 bg-green-500 dark:bg-green-400 border-2 border-white rounded-full"></span>
+      ) : (
+        <span className="bottom-0 left-7 absolute  w-3.5 h-3.5 bg-gray-400 border-2 border-white rounded-full"></span>
+      )}
+    </div>
+  );
 }

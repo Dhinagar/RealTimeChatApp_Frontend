@@ -5,22 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import Logout from "../accounts/Logout";
 import ThemeToggler from "./ThemeToggler";
-import "./header.css";
-
 import React from "react";
+import LetterThumbnaill from "./LetterThumbnaill";
 
-const LetterThumbnail = ({ text, backgroundColor }) => {
-  const initial = text ? text.charAt(0).toUpperCase() : "Hi";
 
-  return (
-    <div
-      className="letter-thumbnail-container"
-      style={{ backgroundColor: backgroundColor }}
-    >
-      <span className="letter-thumbnail-text">{initial}</span>
-    </div>
-  );
-};
 
 export default function Header() {
   const [modal, setModal] = useState(false);
@@ -62,7 +50,7 @@ export default function Header() {
                   to="/profile"
                   className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-full text-sm p-2.5"
                 >
-                  <LetterThumbnail
+                  <LetterThumbnaill
                     text={currentUser.userName}
                     backgroundColor="#3498db"
                   />

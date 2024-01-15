@@ -1,42 +1,33 @@
 import axios from "axios";
 import { io } from "socket.io-client";
-const auth= {
-  currentUser:{
-    getIdToken:()=>{
+import { useAuth } from "../contexts/AuthContext";
+const auth = {
+  currentUser: {
+    getIdToken: () => {
       // Placeholder for login logic
       return new Promise((resolve, reject) => {
         // Simulate success
-        resolve({ });
+        resolve({});
         // Simulate failure
         // reject("Login failed");
       });
-    }
-  }
-}
-
-const baseURL = "http://localhost:3001/api";
-
-const getUserToken = async () => {
-  const user = auth.currentUser;
-  const token = user && (await user.getIdToken());
-  return token;
+    },
+  },
 };
 
-export const initiateSocketConnection = async () => {
-  const token = await getUserToken();
+const baseURL = "http://localhost:5000";
+const baseURLSIO = "http://localhost:5000";
 
-  const socket = io("http://localhost:3001", {
+export const initiateSocketConnection = async (token) => {
+  const socket = io(baseURLSIO, {
     auth: {
       token,
     },
   });
-
   return socket;
 };
 
-const createHeader = async () => {
-  const token = await getUserToken();
-
+const createHeader = async (token) => {
   const payloadHeader = {
     headers: {
       "Content-Type": "application/json",
@@ -46,11 +37,58 @@ const createHeader = async () => {
   return payloadHeader;
 };
 
-export const getAllUsers = async () => {
-  const header = await createHeader();
-
+export const getAllUsers = async (token, username) => {
+  const header = await createHeader(token);
   try {
-    const res = await axios.get(`${baseURL}/user`, header);
+    const res = await axios.get(
+      `${baseURL}/profile/getAllUsersByuserName/${username}`,
+      header
+    );
+    return res.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const raiseFreindReq = async (token, srcUsername, destiUserName) => {
+  const header = await createHeader(token);
+  try {
+    let bodyData = {
+      sourceUserName: srcUsername,
+      destinationUserName: destiUserName,
+    };
+    console.log("bodyData.....", bodyData);
+    const res = await axios.post(
+      `${baseURL}/friends/raiseFriendRequest`,
+      bodyData,
+      header
+    );
+    return res.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
+export const declineFreindReq = async (token, srcUsername, destiUserName) => {
+  const header = await createHeader(token);
+  try {
+    const res = await axios.post(
+      `${baseURL}/friends/declineFriendRequest`,
+      { sourceUserName: srcUsername, destinationUserName: destiUserName },
+      header
+    );
+    return res.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
+export const acceptFreindReq = async (token, srcUsername, destiUserName) => {
+  const header = await createHeader(token);
+  try {
+    const res = await axios.post(
+      `${baseURL}/friends/acceptFriendRequest`,
+      { sourceUserName: srcUsername, destinationUserName: destiUserName },
+      header
+    );
     return res.data;
   } catch (e) {
     console.error(e);
@@ -104,33 +142,33 @@ export const getChatRoomOfUsers = async (firstUserId, secondUserId) => {
   }
 };
 
-export const createChatRoom = async (members) => {
-  const header = await createHeader();
+export const createChatRoom = async (token, sourceUserName, destinationUserName) => {
+  const header = await createHeader(token);
 
   try {
-    const res = await axios.post(`${baseURL}/room`, members, header);
+    const res = await axios.post(`${baseURL}/chats/createchatroom`, {sourceUserName, destinationUserName}, header);
     return res.data;
   } catch (e) {
     console.error(e);
   }
 };
 
-export const getMessagesOfChatRoom = async (chatRoomId) => {
-  const header = await createHeader();
+export const getMessagesOfChatRoom = async (token,chatRoomId) => {
+  const header = await createHeader(token);
 
   try {
-    const res = await axios.get(`${baseURL}/message/${chatRoomId}`, header);
+    const res = await axios.get(`${baseURL}/chats/getAllMessagesForChatroom/${chatRoomId}`, header);
     return res.data;
   } catch (e) {
     console.error(e);
   }
 };
 
-export const sendMessage = async (messageBody) => {
-  const header = await createHeader();
+export const sendMessage = async (token,messageBody) => {
+  const header = await createHeader(token);
 
   try {
-    const res = await axios.post(`${baseURL}/message`, messageBody, header);
+    const res = await axios.post(`${baseURL}/chats/sendmessage`, messageBody, header);
     return res.data;
   } catch (e) {
     console.error(e);
