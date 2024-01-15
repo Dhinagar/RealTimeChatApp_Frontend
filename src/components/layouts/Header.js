@@ -8,8 +8,6 @@ import ThemeToggler from "./ThemeToggler";
 import React from "react";
 import LetterThumbnaill from "./LetterThumbnaill";
 
-
-
 export default function Header() {
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();

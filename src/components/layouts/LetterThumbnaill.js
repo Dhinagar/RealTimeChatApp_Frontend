@@ -1,5 +1,6 @@
 
 import "./header.css";
+import React from 'react';
  const LetterThumbnail = ({ text, backgroundColor }) => {
     const initial = text ? text.charAt(0).toUpperCase() : "Hi";
   
