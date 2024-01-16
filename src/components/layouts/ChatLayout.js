@@ -43,9 +43,20 @@ export default function ChatLayout() {
   };
 
   useEffect(() => {
-    fetchData();
+    const fetchDataInterval = setInterval(() => {
+      fetchData();
+    }, 60000); // 60000 milliseconds = 1 minute
+
+    // Clear the interval on component unmount
+    return () => {
+      clearInterval(fetchDataInterval);
+    };
   }, []);
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+  
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
   };

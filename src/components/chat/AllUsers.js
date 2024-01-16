@@ -34,8 +34,9 @@ export default function AllUsers({
       setError("try again later.");
       return;
     }
-    console.log("res.....",res)
+    
     changeChat(res?.chatRoom);
+    fetchData()
   };
 
   return (
